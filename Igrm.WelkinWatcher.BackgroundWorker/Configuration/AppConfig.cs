@@ -12,7 +12,9 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
         public static Action<HostBuilderContext, IConfigurationBuilder> Execute => 
                       (context, builder) => 
                       {
-
+                          builder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                          builder.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                          builder.AddEnvironmentVariables();
                       };
     }
 }

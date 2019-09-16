@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Igrm.OpenSkyApi;
+using Igrm.OpenFlights;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -13,7 +15,10 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
         public static Action<HostBuilderContext,IServiceCollection> Execute =>
               (context, collection) =>
               {
-
+                  collection.AddLogging();
+                  collection.AddHttpClient();
+                  collection.AddTransient<IOpenFlightsDataCache, OpenFlightsDataCache>();
+                  collection.AddTransient<IOpenSkyClient, OpenSkyClient>();
               };
     }
 }
