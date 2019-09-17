@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +11,15 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Services
 {
     public abstract class HostedServiceBase : IHostedService
     {
-        public Task StartAsync(CancellationToken cancellationToken)
+        protected IConfiguration _configuration;
+
+        public HostedServiceBase(IConfiguration configuration)
         {
-            throw new NotImplementedException();
+            _configuration = configuration;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Task StartAsync(CancellationToken cancellationToken);
+
+        public abstract Task StopAsync(CancellationToken cancellationToken);
     }
 }

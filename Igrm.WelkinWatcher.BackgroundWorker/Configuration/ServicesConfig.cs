@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Igrm.WelkinWatcher.BackgroundWorker.Services;
 
 namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
 {
@@ -17,8 +18,7 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
               {
                   collection.AddLogging();
                   collection.AddHttpClient();
-                  collection.AddTransient<IOpenFlightsDataCache, OpenFlightsDataCache>();
-                  collection.AddTransient<IOpenSkyClient, OpenSkyClient>();
+                  collection.AddTransient<IHostedService, StateVectorsHostedService>();
               };
     }
 }

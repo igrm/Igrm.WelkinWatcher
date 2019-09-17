@@ -11,7 +11,6 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
         public static Action<IConfigurationBuilder> Execute =>
                      (builder) => 
                      {
-                         builder.SetBasePath(AppContext.BaseDirectory);
                          builder.AddEnvironmentVariables(prefix: "ASPNETCORE_");
                          builder.AddJsonFile("hostsettings.json", optional: true);
                      };
