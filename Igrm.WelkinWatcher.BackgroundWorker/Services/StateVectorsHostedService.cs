@@ -14,24 +14,19 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Services
 {
     public class StateVectorsHostedService : HostedServiceBase
     {
-        private readonly IOpenSkyClient _openSkyClient;
-        private readonly IOpenFlightsDataCache _openFlightsDataCache;
         private readonly ILogger<StateVectorsHostedService> _logger;
+        private readonly IStateVectorsWorker _stateVectorsWorker;
 
-        public StateVectorsHostedService(IConfiguration configuration, ILogger<StateVectorsHostedService> logger, IHttpClientFactory clientFactory) :base(configuration)
+        public StateVectorsHostedService(IConfiguration configuration, ILogger<StateVectorsHostedService> logger, IStateVectorsWorker stateVectorsWorker) :base(configuration)
         {
-            var httpClient = clientFactory.CreateClient();
-
-            _openSkyClient = new OpenSkyClient(httpClient);
-            _openFlightsDataCache = new OpenFlightsDataCache(httpClient);
-
-            _logger = logger;
+             _logger = logger;
+            _stateVectorsWorker = stateVectorsWorker;
         }
 
         public async override Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting.....");
-            await new StateVectorsWorker(_logger).ProduceVectorMessages() ;
+            await _stateVectorsWorker.ProduceVectorMessages() ;
         }
 
         public async override Task StopAsync(CancellationToken cancellationToken)

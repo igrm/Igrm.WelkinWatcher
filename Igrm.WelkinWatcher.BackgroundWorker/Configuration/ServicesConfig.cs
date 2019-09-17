@@ -11,6 +11,7 @@ using Igrm.WelkinWatcher.BackgroundWorker.Services;
 using Rebus.ServiceProvider;
 using Rebus.Config;
 using RabbitMQ.Client;
+using Igrm.WelkinWatcher.BackgroundWorker.Workers;
 
 namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
 {
@@ -26,6 +27,8 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
                   collection.AddHttpClient();
                   collection.AddRebus(configure => configure.Logging(l => l.Serilog())
                                                             .Transport(t=>t.UseRabbitMq(connectionFactory.Uri.ToString(),"default")));
+
+                  collection.AddTransient<IStateVectorsWorker, StateVectorsWorker>();
                   collection.AddTransient<IHostedService, StateVectorsHostedService>();
                   
               };
