@@ -30,7 +30,7 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Services
 
         public async override Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Starting.....");
+            _logger.LogInformation("Starting.....");
             await new StateVectorsWorker(_logger).ProduceVectorMessages() ;
         }
 
