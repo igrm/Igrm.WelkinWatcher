@@ -1,46 +1,59 @@
-﻿using Igrm.OpenSkyApi;
+﻿using Igrm.OpenFlights;
+using Igrm.OpenSkyApi;
 using Microsoft.Extensions.Logging;
+using Rebus.Bus;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Threading;
 using Igrm.OpenSkyApi.Models.Request;
-using Igrm.OpenFlights;
-using System.Text.RegularExpressions;
+using System.Collections.Concurrent;
+using System.Linq;
 
 namespace Igrm.WelkinWatcher.BackgroundWorker.Workers
 {
-    public interface IStateVectorsWorker
+    public interface IStateVectorsWorker: IDisposable
     {
-        Task ProduceVectorMessages();
+        Task ProduceVectorMessagesAsync();
     }
 
     public class StateVectorsWorker:WorkerBase, IStateVectorsWorker
     {
         private ILogger<StateVectorsWorker> _logger;
-        private readonly IOpenSkyClient _openSkyClient;
-        private readonly IOpenFlightsDataCache _openFlightsDataCache;
+        private readonly IBus _bus;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public StateVectorsWorker(ILogger<StateVectorsWorker> logger, IHttpClientFactory httpClientFactory)
+        public StateVectorsWorker(ILogger<StateVectorsWorker> logger, IHttpClientFactory httpClientFactory, IBus bus)
         {
             _logger = logger;
-            var client = httpClientFactory.CreateClient();
-            _openSkyClient = new OpenSkyClient(client);
-            _openFlightsDataCache = new OpenFlightsDataCache(client);
+            _httpClientFactory = httpClientFactory;
+            _bus = bus;
         }
 
-        public async Task ProduceVectorMessages()
+        public async Task ProduceVectorMessagesAsync()
         {
-       
-            var vectors = _openSkyClient.GetAllStateVectors(new AllStateVectorsRequestModel());
-            var airlines = await _openFlightsDataCache.GetAirlinesAsync();
+            _logger.LogInformation($"-----------------------------{Guid.NewGuid()}----------------------------------------");
 
-            foreach (var item in vectors.StateVectors)
-            {
-                _logger.LogInformation($"{item.LastContact}, {item.Icao24}, {item.CallSign}, {item.OnGround}, {item.Velocity}");
-            }
+            var client = _httpClientFactory.CreateClient();
 
+            var openSkyClient = new OpenSkyClient(client);
+
+            var vectors = openSkyClient.GetAllStateVectors(new AllStateVectorsRequestModel());
+            var tasks = new ConcurrentDictionary<string, Task>();
+
+            Parallel.ForEach(vectors.StateVectors.ToArray(), (vector) => {
+                tasks.TryAdd(vector.Icao24,
+                                Task.Run(() =>{
+                                    _logger.LogInformation($"{vector.Icao24}");
+                                }));
+            });
+
+            await Task.WhenAll(tasks.Values);
+        }
+
+
+        public void Dispose()
+        {
         }
     }
 }

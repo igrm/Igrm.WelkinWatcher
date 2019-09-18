@@ -12,6 +12,7 @@ using Rebus.ServiceProvider;
 using Rebus.Config;
 using RabbitMQ.Client;
 using Igrm.WelkinWatcher.BackgroundWorker.Workers;
+using Rebus.Transport.InMem;
 
 namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
 {
@@ -26,7 +27,7 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
                   collection.AddLogging();
                   collection.AddHttpClient();
                   collection.AddRebus(configure => configure.Logging(l => l.Serilog())
-                                                            .Transport(t=>t.UseRabbitMq(connectionFactory.Uri.ToString(),"default")));
+                                                            .Transport(t => t.UseInMemoryTransport(new InMemNetwork(outputEventsToConsole:false), "Messages")));
 
                   collection.AddTransient<IStateVectorsWorker, StateVectorsWorker>();
                   collection.AddTransient<IHostedService, StateVectorsHostedService>();

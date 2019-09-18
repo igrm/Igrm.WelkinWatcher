@@ -12,10 +12,11 @@ using System.Threading.Tasks;
 
 namespace Igrm.WelkinWatcher.BackgroundWorker.Services
 {
-    public class StateVectorsHostedService : HostedServiceBase
+    public class StateVectorsHostedService : HostedServiceBase, IDisposable
     {
         private readonly ILogger<StateVectorsHostedService> _logger;
         private readonly IStateVectorsWorker _stateVectorsWorker;
+        private Timer _timer;
 
         public StateVectorsHostedService(IConfiguration configuration, ILogger<StateVectorsHostedService> logger, IStateVectorsWorker stateVectorsWorker) :base(configuration)
         {
@@ -23,15 +24,24 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Services
             _stateVectorsWorker = stateVectorsWorker;
         }
 
-        public async override Task StartAsync(CancellationToken cancellationToken)
+        public void Dispose()
         {
-            _logger.LogInformation("Starting.....");
-            await _stateVectorsWorker.ProduceVectorMessages() ;
+            _stateVectorsWorker.Dispose();
+            _timer.Dispose();
         }
 
-        public async override Task StopAsync(CancellationToken cancellationToken)
+        public override Task StartAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Starting.....");
+            TimerCallback callback = new TimerCallback(async (state) => { await _stateVectorsWorker.ProduceVectorMessagesAsync(); });
+            _timer = new Timer(callback, null, TimeSpan.Zero, TimeSpan.FromSeconds(25));
+            return Task.CompletedTask;
+        }
 
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            _timer.Change(Timeout.Infinite, 0);
+            return Task.CompletedTask;
         }
     }
 }
