@@ -32,8 +32,6 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Workers
 
         public async Task ProduceVectorMessagesAsync()
         {
-            _logger.LogInformation($"-----------------------------{Guid.NewGuid()}----------------------------------------");
-
             var client = _httpClientFactory.CreateClient();
 
             var openSkyClient = new OpenSkyClient(client);
@@ -44,7 +42,7 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Workers
             Parallel.ForEach(vectors.StateVectors.ToArray(), (vector) => {
                 tasks.TryAdd(vector.Icao24,
                                 Task.Run(() =>{
-                                    _logger.LogInformation($"{vector.Icao24}");
+                                    _bus.Publish(vector);
                                 }));
             });
 

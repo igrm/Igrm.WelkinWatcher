@@ -23,12 +23,11 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
               {
                   var connectionFactory = new ConnectionFactory();
                   context.Configuration.GetSection("RabbitMqConnection").Bind(connectionFactory);
-
+                  string connectionString = $"amqp://{connectionFactory.UserName}:{connectionFactory.Password}@{connectionFactory.HostName}:5672{connectionFactory.VirtualHost}";
                   collection.AddLogging();
                   collection.AddHttpClient();
                   collection.AddRebus(configure => configure.Logging(l => l.Serilog())
-                                                            .Transport(t => t.UseInMemoryTransport(new InMemNetwork(outputEventsToConsole:false), "Messages")));
-
+                                                            .Transport(t => t.UseRabbitMq(connectionString, "default")));
                   collection.AddTransient<IStateVectorsWorker, StateVectorsWorker>();
                   collection.AddTransient<IHostedService, StateVectorsHostedService>();
                   

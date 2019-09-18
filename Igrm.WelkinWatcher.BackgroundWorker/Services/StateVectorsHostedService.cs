@@ -40,6 +40,7 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Services
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Stoping.....");
             _timer.Change(Timeout.Infinite, 0);
             return Task.CompletedTask;
         }
