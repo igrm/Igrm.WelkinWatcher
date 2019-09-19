@@ -26,7 +26,6 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Services
 
         public void Dispose()
         {
-            _stateVectorsWorker.Dispose();
             _timer.Dispose();
         }
 
@@ -34,7 +33,7 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Services
         {
             _logger.LogInformation("Starting.....");
             TimerCallback callback = new TimerCallback(async (state) => { await _stateVectorsWorker.ProduceVectorMessagesAsync(); });
-            _timer = new Timer(callback, null, TimeSpan.Zero, TimeSpan.FromSeconds(25));
+            _timer = new Timer(callback, null, TimeSpan.Zero, TimeSpan.FromSeconds(_configuration.GetValue<int>("StateVectorsPeriod"))) ;
             return Task.CompletedTask;
         }
 

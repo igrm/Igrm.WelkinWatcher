@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Igrm.WelkinWatcher.BackgroundWorker.Workers
 {
-    public interface IStateVectorsWorker: IDisposable
+    public interface IStateVectorsWorker
     {
         Task ProduceVectorMessagesAsync();
     }
@@ -32,26 +32,26 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Workers
 
         public async Task ProduceVectorMessagesAsync()
         {
-            var client = _httpClientFactory.CreateClient();
+            _logger.LogInformation("Producing messages...");
+            using (var client = _httpClientFactory.CreateClient())
+            {
 
-            var openSkyClient = new OpenSkyClient(client);
+                var openSkyClient = new OpenSkyClient(client);
 
-            var vectors = openSkyClient.GetAllStateVectors(new AllStateVectorsRequestModel());
-            var tasks = new ConcurrentDictionary<string, Task>();
+                var vectors = openSkyClient.GetAllStateVectors(new AllStateVectorsRequestModel());
+                var tasks = new ConcurrentDictionary<string, Task>();
 
-            Parallel.ForEach(vectors.StateVectors.ToArray(), (vector) => {
-                tasks.TryAdd(vector.Icao24,
-                                Task.Run(() =>{
-                                    _bus.Publish(vector);
-                                }));
-            });
+                Parallel.ForEach(vectors.StateVectors.ToArray(), (vector) =>
+                {
+                    tasks.TryAdd(vector.Icao24,
+                                    Task.Run(() =>
+                                    {
+                                        _bus.Publish(vector);
+                                    }));
+                });
 
-            await Task.WhenAll(tasks.Values);
-        }
-
-
-        public void Dispose()
-        {
+                await Task.WhenAll(tasks.Values);
+            }
         }
     }
 }
