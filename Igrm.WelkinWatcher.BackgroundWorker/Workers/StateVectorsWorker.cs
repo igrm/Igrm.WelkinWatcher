@@ -1,14 +1,10 @@
-﻿using Igrm.OpenFlights;
-using Igrm.OpenSkyApi;
+﻿using Igrm.OpenSkyApi;
+using Igrm.OpenSkyApi.Models.Request;
+using MassTransit;
 using Microsoft.Extensions.Logging;
-using Rebus.Bus;
-using System;
+using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Threading;
-using Igrm.OpenSkyApi.Models.Request;
-using System.Collections.Concurrent;
-using System.Linq;
 
 namespace Igrm.WelkinWatcher.BackgroundWorker.Workers
 {
@@ -43,11 +39,7 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Workers
 
                 Parallel.ForEach(vectors.StateVectors.ToArray(), (vector) =>
                 {
-                    tasks.TryAdd(vector.Icao24,
-                                    Task.Run(() =>
-                                    {
-                                        _bus.Publish(vector);
-                                    }));
+                    tasks.TryAdd(vector.Icao24, _bus.Publish(vector));
                 });
 
                 await Task.WhenAll(tasks.Values);

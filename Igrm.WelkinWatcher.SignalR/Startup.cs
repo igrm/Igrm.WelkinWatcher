@@ -4,10 +4,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RabbitMQ.Client;
-using Rebus.Config;
-using Rebus.Routing.TypeBased;
-using Rebus.ServiceProvider;
 using Serilog;
 
 namespace Igrm.WelkinWatcher.SignalR
@@ -31,9 +27,7 @@ namespace Igrm.WelkinWatcher.SignalR
 
             services.AddSignalR();
             services.AddLogging();
-            services.AddRebus(configure => configure.Logging(l => l.Serilog())
-                                                    .Routing(r => r.TypeBased().MapAssemblyOf<StateVector>("default"))
-                                                    .Transport(t => t.UseRabbitMq(connectionString, "default")));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,9 +45,7 @@ namespace Igrm.WelkinWatcher.SignalR
                 routes.MapHub<StateVectorsHub>("/stateVectors");
             });
 
-            app.ApplicationServices.UseRebus(async bus => {
-                await bus.Subscribe<StateVector>();
-            });
+
         }
     }
 }
