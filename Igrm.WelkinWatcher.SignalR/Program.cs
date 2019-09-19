@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Igrm.WelkinWatcher.Hub
+namespace Igrm.WelkinWatcher.SignalR
 {
     public class Program
     {

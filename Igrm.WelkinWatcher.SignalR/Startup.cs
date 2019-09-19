@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Igrm.WelkinWatcher.Hub
+namespace Igrm.WelkinWatcher.SignalR
 {
     public class Startup
     {
