@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Rebus.Bus;
+using System.Threading.Tasks;
+using Igrm.OpenSkyApi.Models.Response;
 
 namespace Igrm.WelkinWatcher.SignalR.Hubs
 {

@@ -1,4 +1,5 @@
-﻿using Igrm.WelkinWatcher.SignalR.Hubs;
+﻿using Igrm.OpenSkyApi.Models.Response;
+using Igrm.WelkinWatcher.SignalR.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -46,6 +47,10 @@ namespace Igrm.WelkinWatcher.SignalR
             app.UseSignalR(routes =>
             {
                 routes.MapHub<StateVectorsHub>("/stateVectors");
+            });
+
+            app.ApplicationServices.UseRebus(async bus => {
+                await bus.Subscribe<StateVector>();
             });
         }
     }
