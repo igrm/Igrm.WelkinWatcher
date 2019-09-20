@@ -1,10 +1,14 @@
 ﻿using Igrm.OpenSkyApi.Models.Response;
 using Igrm.WelkinWatcher.SignalR.Hubs;
+using Igrm.WelkinWatcher.SignalR.Services;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RabbitMQ.Client;
 using Serilog;
+using System;
 
 namespace Igrm.WelkinWatcher.SignalR
 {
@@ -27,6 +31,33 @@ namespace Igrm.WelkinWatcher.SignalR
 
             services.AddSignalR();
             services.AddLogging();
+            services.AddMassTransit(
+                config =>
+                {
+                    config.AddConsumer<StateVectorHandler>();
+                    config.AddBus(
+                        provider =>
+                                Bus.Factory.CreateUsingRabbitMq(data =>
+                                {
+                                    var host = data.Host(new Uri($"rabbitmq://{connectionFactory.HostName}:{connectionFactory.Port}"), hostConfigurator =>
+                                    {
+                                        hostConfigurator.Username(connectionFactory.UserName);
+                                        hostConfigurator.Password(connectionFactory.Password);
+
+                                    });
+                                    data.UseSerilog();
+                                    data.ReceiveEndpoint(host, "state-vector-queue", ep =>
+                                    {
+                                        ep.ConfigureConsumer<StateVectorHandler>(provider);
+                                    });
+                                })
+                    );
+                }
+            );
+
+            services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
+
+            services.AddHostedService<BusHostedService>();
 
         }
 
@@ -39,7 +70,7 @@ namespace Igrm.WelkinWatcher.SignalR
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseSignalR(routes =>
             {
                 routes.MapHub<StateVectorsHub>("/stateVectors");

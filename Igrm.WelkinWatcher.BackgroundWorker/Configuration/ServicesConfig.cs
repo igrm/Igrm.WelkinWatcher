@@ -22,22 +22,23 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
                   collection.AddLogging();
                   collection.AddHttpClient();
                   collection.AddMassTransit(
-                      config =>
-                          config.AddBus(
-                              provider =>
-                                      Bus.Factory.CreateUsingRabbitMq(data => {
-                                          var host = data.Host(new Uri($"rabbitmq://{connectionFactory.HostName}:{connectionFactory.Port}"), hostConfigurator =>
+                      config => {
+                              config.AddBus(
+                                  provider =>
+                                          Bus.Factory.CreateUsingRabbitMq(data =>
                                           {
-                                              hostConfigurator.Username(connectionFactory.UserName);
-                                              hostConfigurator.Password(connectionFactory.Password);
+                                              var host = data.Host(new Uri($"rabbitmq://{connectionFactory.HostName}:{connectionFactory.Port}"), hostConfigurator =>
+                                              {
+                                                  hostConfigurator.Username(connectionFactory.UserName);
+                                                  hostConfigurator.Password(connectionFactory.Password);
 
-                                          });
-                                          data.UseSerilog();
-                                      })
-                          )
+                                              });
+                                              data.UseSerilog();
+                                          })
+                              );
+                          }
                   );
 
-                  collection.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
                   collection.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
 
                   collection.AddScoped<IStateVectorsWorker, StateVectorsWorker>();
