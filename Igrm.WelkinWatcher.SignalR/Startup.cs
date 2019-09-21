@@ -29,6 +29,13 @@ namespace Igrm.WelkinWatcher.SignalR
             _config.GetSection("RabbitMqConnection").Bind(connectionFactory);
             string connectionString = $"amqp://{connectionFactory.UserName}:{connectionFactory.Password}@{connectionFactory.HostName}:5672{connectionFactory.VirtualHost}";
 
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+                                                                builder =>
+                                                                {
+                                                                    builder.AllowAnyMethod().AllowAnyHeader()
+                                                                           .AllowAnyOrigin();
+                                                                })
+            );
             services.AddSignalR();
             services.AddLogging();
             services.AddMassTransit(
@@ -70,7 +77,7 @@ namespace Igrm.WelkinWatcher.SignalR
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors("CorsPolicy");
             app.UseSignalR(routes =>
             {
                 routes.MapHub<StateVectorsHub>("/stateVectors");

@@ -1,4 +1,20 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿const connection = new signalR.HubConnectionBuilder()
+    .withUrl("ws://localhost:64323/stateVectors", {
+        skipNegotiation: true,
+        transport: signalR.HttpTransportType.WebSockets
+    })
+    .configureLogging(signalR.LogLevel.Debug)
+    .build();
 
-// Write your Javascript code.
+connection.start().then(function () {
+    console.log("connected");
+});
+
+connection.on("ReceiveStateVector", (stateVector) => {
+    ReceiveStateVector(stateVector);
+});
+
+function ReceiveStateVector(stateVector) {
+    console.log(stateVector);
+}
+
