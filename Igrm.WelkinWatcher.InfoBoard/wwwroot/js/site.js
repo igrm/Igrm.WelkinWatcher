@@ -16,6 +16,7 @@ const connection = new signalR.HubConnectionBuilder()
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets
     })
+    .withAutomaticReconnect()
     .configureLogging(signalR.LogLevel.Debug)
     .build();
 
