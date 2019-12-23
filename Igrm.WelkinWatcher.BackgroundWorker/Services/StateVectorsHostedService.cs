@@ -26,18 +26,6 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Services
             _configuration = configuration;
         }
 
-        public override Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Starting.....");
-            return Task.CompletedTask;
-        }
-
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Stoping.....");
-            return Task.CompletedTask;
-        }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Executing.....");
@@ -47,7 +35,6 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Services
                 await _stateVectorsWorker.ProduceVectorMessagesAsync();
                 await Task.Delay(_configuration.GetValue<int>("StateVectorsPeriod"), stoppingToken);
             }
-
         }
     }
 }

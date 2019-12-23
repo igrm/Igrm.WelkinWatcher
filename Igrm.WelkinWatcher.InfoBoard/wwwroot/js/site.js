@@ -12,7 +12,7 @@ function toColor(num) {
 }
 
 const connection = new signalR.HubConnectionBuilder()
-    .withUrl("ws://140.238.208.12:9090/stateVectors", {
+    .withUrl("ws://localhost:64323/stateVectors", {
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets
     })
