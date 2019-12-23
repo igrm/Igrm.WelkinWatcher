@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
 COPY ["Igrm.WelkinWatcher.InfoBoard/Igrm.WelkinWatcher.InfoBoard.csproj", "Igrm.WelkinWatcher.InfoBoard/"]
 RUN dotnet restore "Igrm.WelkinWatcher.InfoBoard/Igrm.WelkinWatcher.InfoBoard.csproj"
