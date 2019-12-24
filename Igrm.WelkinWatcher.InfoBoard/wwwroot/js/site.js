@@ -11,25 +11,6 @@ function toColor(num) {
     return "rgba(" + [r, g, b, a].join(",") + ")";
 }
 
-const connection = new signalR.HubConnectionBuilder()
-    .withUrl("ws://localhost:64323/stateVectors", {
-        skipNegotiation: true,
-        transport: signalR.HttpTransportType.WebSockets
-    })
-    .withAutomaticReconnect()
-    .configureLogging(signalR.LogLevel.Debug)
-    .build();
-
-connection.start().then(function () {
-   template = document.getElementById("template");
-   table = document.getElementById("vectors");
-   console.log("connected");
-});
-
-connection.on("ReceiveStateVector", (stateVector) => {
-    ReceiveStateVector(stateVector);
-});
-
 function ReceiveStateVector(stateVector) {
 
     if (!headerAdded) {
