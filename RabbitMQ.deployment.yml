@@ -19,13 +19,10 @@ spec:
       containers:
       - image: rabbitmq:3.8.2-management
         name: rabbit-mq
-        resources:
-          limits:
-            memory: "270Mi"
-            cpu: "250m"
         ports:
         - containerPort: 15672
         - containerPort: 15671
         - containerPort: 5671
+        - containerPort: 5672
       restartPolicy: Always
      

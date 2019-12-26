@@ -1,4 +1,4 @@
-kubectl apply secret docker-registry regcred --docker-server=de.icr.io/igrm/welkinwatcher --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
+kubectl create secret docker-registry regcred --docker-server=de.icr.io/igrm/welkinwatcher --docker-username=iamapikey --docker-password=<tbd> --docker-email=<tbd>
 kubectl apply -f RabbitMQ.deployment.yml
 kubectl apply -f RabbitMQ.service.yml
 kubectl apply -f BackgroundWorker.deployment.yml

@@ -7,8 +7,8 @@ spec:
     app: rabbit-mq
   ports:
     - protocol: TCP
-      port: 5671
-      targetPort: 5671
+      port: 5672
+      targetPort: 5672
       name: default
     - protocol: TCP
       port: 15672

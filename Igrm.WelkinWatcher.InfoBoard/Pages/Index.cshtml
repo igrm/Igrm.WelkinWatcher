@@ -42,7 +42,7 @@ New:&nbsp;<span id="numberOfItemsNew">0</span>&nbsp;|&nbsp;Updates:&nbsp;<span i
     // self executing function here
     (function () {
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("@Model.SignalRHost", {
+            .withUrl(window.location.protocol+"//"+window.location.hostname+"@Model.SignalRHost", {
                 skipNegotiation: true,
                 transport: signalR.HttpTransportType.WebSockets
             })
