@@ -1,11 +1,11 @@
-﻿using Igrm.OpenSkyApi.Models.Response;
-using Igrm.WelkinWatcher.SignalR.Hubs;
+﻿using Igrm.WelkinWatcher.SignalR.Hubs;
 using Igrm.WelkinWatcher.SignalR.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using Serilog;
 using System;
@@ -69,7 +69,7 @@ namespace Igrm.WelkinWatcher.SignalR
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(_config).CreateLogger();
 
@@ -78,9 +78,11 @@ namespace Igrm.WelkinWatcher.SignalR
                 app.UseDeveloperExceptionPage();
             }
             app.UseCors("CorsPolicy");
-            app.UseSignalR(routes =>
+            
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapHub<StateVectorsHub>("/stateVectors");
+                endpoints.MapHub<StateVectorsHub>("/stateVectors");
             });
 
 

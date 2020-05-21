@@ -37,3 +37,27 @@ New:&nbsp;<span id="numberOfItemsNew">0</span>&nbsp;|&nbsp;Updates:&nbsp;<span i
         <td></td>
     </tr>
 </table>
+
+<script>
+    // self executing function here
+    (function () {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(window.location.protocol+"//"+window.location.hostname+"@Model.SignalRHost", {
+                skipNegotiation: true,
+                transport: signalR.HttpTransportType.WebSockets
+            })
+            .withAutomaticReconnect()
+            .configureLogging(signalR.LogLevel.Debug)
+            .build();
+
+        connection.start().then(function () {
+            template = document.getElementById("template");
+            table = document.getElementById("vectors");
+            console.log("connected");
+        });
+
+        connection.on("ReceiveStateVector", (stateVector) => {
+            ReceiveStateVector(stateVector);
+        });
+    })();
+</script>

@@ -2,6 +2,7 @@
 using Igrm.OpenSkyApi;
 using Igrm.WelkinWatcher.BackgroundWorker.Workers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,36 +13,28 @@ using System.Threading.Tasks;
 
 namespace Igrm.WelkinWatcher.BackgroundWorker.Services
 {
-    public class StateVectorsHostedService : HostedServiceBase, IDisposable
+    public class StateVectorsHostedService : BackgroundService
     {
         private readonly ILogger<StateVectorsHostedService> _logger;
         private readonly IStateVectorsWorker _stateVectorsWorker;
-        private Timer _timer;
+        private readonly IConfiguration _configuration;
 
-        public StateVectorsHostedService(IConfiguration configuration, ILogger<StateVectorsHostedService> logger, IStateVectorsWorker stateVectorsWorker) :base(configuration)
+        public StateVectorsHostedService(IConfiguration configuration, ILogger<StateVectorsHostedService> logger, IStateVectorsWorker stateVectorsWorker) :base()
         {
              _logger = logger;
             _stateVectorsWorker = stateVectorsWorker;
+            _configuration = configuration;
         }
 
-        public void Dispose()
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _timer.Dispose();
-        }
-
-        public override Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Starting.....");
-            TimerCallback callback = new TimerCallback(async (state) => { await _stateVectorsWorker.ProduceVectorMessagesAsync(); });
-            _timer = new Timer(callback, null, TimeSpan.Zero, TimeSpan.FromSeconds(_configuration.GetValue<int>("StateVectorsPeriod"))) ;
-            return Task.CompletedTask;
-        }
-
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Stoping.....");
-            _timer.Change(Timeout.Infinite, 0);
-            return Task.CompletedTask;
+            _logger.LogInformation("Executing.....");
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                _logger.LogInformation("ProduceVectorMessagesAsync called.....");
+                await _stateVectorsWorker.ProduceVectorMessagesAsync();
+                await Task.Delay(_configuration.GetValue<int>("StateVectorsPeriod"), stoppingToken);
+            }
         }
     }
 }

@@ -11,6 +11,10 @@ namespace Igrm.WelkinWatcher.InfoBoard.Pages
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class ErrorModel : PageModel
     {
+        public ErrorModel()
+        {
+            RequestId = string.Empty;
+        }
         public string RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: infoboard
+  name: infoboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: infoboard
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+         app: infoboard
+    spec:
+      containers:
+      - image: de.icr.io/igrm/welkinwatcher/igrmwelkinwatcherinfoboard:latest
+        name: infoboard
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "115Mi"
+            cpu: "250m"
+      imagePullSecrets:
+      - name: regcred
+      restartPolicy: Always

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: backgroundworker
+  name: backgroundworker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backgroundworker
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+         app: backgroundworker
+    spec:
+      containers:
+      - image: de.icr.io/igrm/welkinwatcher/igrmwelkinwatcherbackgroundworker:latest
+        name: backgroundworker
+      imagePullSecrets:
+      - name: regcred
+      restartPolicy: Always

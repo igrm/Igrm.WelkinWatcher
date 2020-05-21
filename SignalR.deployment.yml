@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: signalr
+  name: signalr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: signalr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+         app: signalr
+    spec:
+      containers:
+      - image: de.icr.io/igrm/welkinwatcher/igrmwelkinwatchersignalr:latest
+        name: signalr
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "115Mi"
+            cpu: "250m"
+      imagePullSecrets:
+      - name: regcred
+      restartPolicy: Always

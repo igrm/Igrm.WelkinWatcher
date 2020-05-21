@@ -7,7 +7,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Igrm.WelkinWatcher.Backgrou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Igrm.WelkinWatcher.SignalR", "Igrm.WelkinWatcher.SignalR\Igrm.WelkinWatcher.SignalR.csproj", "{EC760E33-49E3-4FA0-A3ED-0BDF113DFF45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Igrm.WelkinWatcher.InfoBoard", "Igrm.WelkinWatcher.InfoBoard\Igrm.WelkinWatcher.InfoBoard.csproj", "{49BB6045-2AB4-48BE-82BA-C0BC1CE6D828}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Igrm.WelkinWatcher.InfoBoard", "Igrm.WelkinWatcher.InfoBoard\Igrm.WelkinWatcher.InfoBoard.csproj", "{49BB6045-2AB4-48BE-82BA-C0BC1CE6D828}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kubernetes", "Kubernetes", "{CCCF1F4C-A6C1-41DF-9FA0-674CE51F49A4}"
+	ProjectSection(SolutionItems) = preProject
+		BackgroundWorker.deployment.yml = BackgroundWorker.deployment.yml
+		InfoBoard.deployment.yml = InfoBoard.deployment.yml
+		InfoBoard.service.yml = InfoBoard.service.yml
+		install.bat = install.bat
+		RabbitMQ.deployment.yml = RabbitMQ.deployment.yml
+		RabbitMQ.service.yml = RabbitMQ.service.yml
+		SignalR.deployment.yml = SignalR.deployment.yml
+		SignalR.service.yml = SignalR.service.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
