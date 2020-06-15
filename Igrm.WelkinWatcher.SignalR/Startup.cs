@@ -1,5 +1,4 @@
 ﻿using Igrm.WelkinWatcher.SignalR.Hubs;
-using Igrm.WelkinWatcher.SignalR.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,16 +43,17 @@ namespace Igrm.WelkinWatcher.SignalR
                     config.AddConsumer<StateVectorHandler>();
                     config.AddBus(
                         provider =>
-                                Bus.Factory.CreateUsingRabbitMq(data =>
+                                Bus.Factory.CreateUsingRabbitMq(busFactoryConfigurator =>
                                 {
-                                    var host = data.Host(new Uri($"rabbitmq://{connectionFactory.HostName}:{connectionFactory.Port}"), hostConfigurator =>
+                                    var host = busFactoryConfigurator.Host(new Uri($"rabbitmq://{connectionFactory.HostName}:{connectionFactory.Port}"), hostConfigurator =>
                                     {
                                         hostConfigurator.Username(connectionFactory.UserName);
                                         hostConfigurator.Password(connectionFactory.Password);
-
                                     });
-                                    data.UseSerilog();
-                                    data.ReceiveEndpoint(host, "state-vector-queue", ep =>
+                                    busFactoryConfigurator.UseHealthCheck(provider);
+
+
+                                    busFactoryConfigurator.ReceiveEndpoint("state-vector-queue", ep =>
                                     {
                                         ep.ConfigureConsumer<StateVectorHandler>(provider);
                                     });
@@ -61,10 +61,7 @@ namespace Igrm.WelkinWatcher.SignalR
                     );
                 }
             );
-
-            services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
-
-            services.AddHostedService<BusHostedService>();
+            services.AddMassTransitHostedService();
 
         }
 

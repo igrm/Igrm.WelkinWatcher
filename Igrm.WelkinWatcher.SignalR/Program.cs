@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using Serilog;
-using Serilog.Core;
-using Serilog.Events;
 
 
 namespace Igrm.WelkinWatcher.SignalR
@@ -19,6 +10,7 @@ namespace Igrm.WelkinWatcher.SignalR
     {
         public static void Main(string[] args)
         {
+            Debug.WriteLine("Starting application...");
             CreateHostBuilder(args).Build().Run();
         }
 

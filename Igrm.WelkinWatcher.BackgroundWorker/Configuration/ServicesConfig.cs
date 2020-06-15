@@ -8,6 +8,7 @@ using MassTransit.AspNetCoreIntegration;
 using System;
 using RabbitMQ.Client;
 using MassTransit;
+using Igrm.OpenSkyApi.Builders;
 
 namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
 {
@@ -25,25 +26,25 @@ namespace Igrm.WelkinWatcher.BackgroundWorker.Configuration
                       config => {
                               config.AddBus(
                                   provider =>
-                                          Bus.Factory.CreateUsingRabbitMq(data =>
+                                          Bus.Factory.CreateUsingRabbitMq(busFactoryConfigurator =>
                                           {
-                                              var host = data.Host(new Uri($"rabbitmq://{connectionFactory.HostName}:{connectionFactory.Port}"), hostConfigurator =>
+                                              var host = busFactoryConfigurator.Host(new Uri($"rabbitmq://{connectionFactory.HostName}:{connectionFactory.Port}"), hostConfigurator =>
                                               {
                                                   hostConfigurator.Username(connectionFactory.UserName);
                                                   hostConfigurator.Password(connectionFactory.Password);
-
                                               });
-                                              data.UseSerilog();
+
+                                              busFactoryConfigurator.UseHealthCheck(provider);
+                                             
                                           })
                               );
                           }
                   );
-
-                  collection.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
+                  collection.AddMassTransitHostedService();
 
                   collection.AddScoped<IStateVectorsWorker, StateVectorsWorker>();
+                  collection.AddScoped<IAllStateVectorsRequestBuilder, AllStateVectorsRequestBuilder>();
 
-                  collection.AddHostedService<BusHostedService>();
                   collection.AddHostedService<StateVectorsHostedService>();
 
               };
