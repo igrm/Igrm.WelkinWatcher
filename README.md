@@ -4,7 +4,7 @@ POC with docker images, Kubernetes, MassTransit, RabbitMQ, SignalR and ASP.NET C
 
 TODO:
 
-- Migrate to .NET 6 and C# 10
+- Migrate to .NET 6 and C# 10, play with records and toplevel statements
 - Switch to Kafka instead of RabbitMQ
 - Add .NET websockets endpoint along SignalR
 - Rework html client to Blazor
