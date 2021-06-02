@@ -11,3 +11,4 @@ TODO:
 - Rework html client to Blazor
 - Add new MAUI clients for Android/Iphone/Mac/Windows
 - Use terraform for infrastructure deployment
+- Set-up github actions
