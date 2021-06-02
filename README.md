@@ -7,6 +7,7 @@ TODO:
 - Migrate to .NET 6 and C# 10, play with records and toplevel statements
 - Switch to Kafka instead of RabbitMQ
 - Add .NET websockets endpoint along SignalR
+- Add gRPC streaming endpoint with retries
 - Rework html client to Blazor
 - Add new MAUI clients for Android/Iphone/Mac/Windows
 - Use terraform for infrastructure deployment
