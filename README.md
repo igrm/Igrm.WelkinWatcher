@@ -13,3 +13,4 @@ TODO:
 - Use terraform for infrastructure deployment
 - Set-up github actions
 - Add feature flags
+- Add request tracing
