@@ -14,3 +14,4 @@ TODO:
 - Set-up github actions
 - Add feature flags
 - Add request tracing
+- Add AppInsights
