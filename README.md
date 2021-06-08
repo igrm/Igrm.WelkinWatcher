@@ -6,6 +6,7 @@ TODO:
 
 - Migrate to .NET 6 and C# 10, play with records and toplevel statements
 - Switch to Kafka instead of RabbitMQ
+- Swtich to DAPR instead of MassTransit
 - Add .NET websockets endpoint along SignalR
 - Add gRPC streaming endpoint with retries
 - Rework html client to Blazor
@@ -13,5 +14,5 @@ TODO:
 - Use terraform for infrastructure deployment
 - Set-up github actions
 - Add feature flags
-- Add request tracing
+- Add request tracing with zipkin
 - Add AppInsights
